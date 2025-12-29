@@ -1,198 +1,89 @@
 # Winbit Backend
 
-**✅ DEMO COMPLETADA** - Backend y panel de administración para Winbit, construido con Next.js 16, Prisma y PostgreSQL.
+Backend y panel de administración para Winbit. Next.js 16, Prisma, PostgreSQL.
 
-## 🎯 Estado Actual
+## Estado
 
-**🚀 Funcional al 100%** - Listo para mostrar demo a Chueco
+**Funcional** - Listo para demo
 
-- ✅ **Servidor:** http://localhost:3000
-- ✅ **Base de datos:** Supabase PostgreSQL conectada
-- ✅ **Autenticación:** Google OAuth funcionando
-- ✅ **Features:** CRUD inversores + gestión solicitudes
-- ✅ **API:** 4 endpoints públicos para PWA
-- ✅ **Tests:** 28 tests pasando (93.1% coverage)
+- Servidor: http://localhost:3000
+- Base de datos: Supabase PostgreSQL
+- Autenticación: Google OAuth
+- Tests: 28 tests pasando (93.1% coverage)
 
 ## Tech Stack
 
-- **Framework:** Next.js 16.1.1 (App Router + Turbopack)
-- **Database:** PostgreSQL (Supabase)
-- **ORM:** Prisma 7.2.0
-- **Authentication:** NextAuth.js v5 (Google OAuth)
-- **UI:** Tailwind CSS + shadcn/ui
-- **Testing:** Vitest + React Testing Library
-- **Hosting:** Vercel
+- Next.js 16.1.1 (App Router)
+- PostgreSQL (Supabase)
+- Prisma 7.2.0
+- NextAuth.js v5 (Google OAuth)
+- Tailwind CSS + shadcn/ui
+- Vitest + React Testing Library
 
-## Características Implementadas
+## Features
 
-- 🔐 **Autenticación:** Google OAuth con NextAuth
-- 👥 **CRUD Inversores:** Crear, listar, ver, activar/desactivar
-- 💰 **Gestión Solicitudes:** Aprobar/rechazar retiros y depósitos
-- 📊 **Dashboard:** Métricas en tiempo real (AUM, inversores, requests)
-- 🔗 **API Pública:** 4 endpoints REST para winbit-app (PWA)
-- 📈 **Historial:** Registro automático de todas las operaciones
-- 🧪 **Testing:** 93.1% coverage con Vitest
+- Autenticación Google OAuth
+- CRUD inversores
+- Gestión de solicitudes (aprobar/rechazar)
+- Dashboard con métricas
+- API pública (4 endpoints para PWA)
+- Historial automático de operaciones
 
 ## Setup
 
-### 1. Instalar dependencias
+1. Instalar dependencias: `npm install`
 
-```bash
-npm install
-```
+2. Configurar `.env`:
+   - `DATABASE_URL`: PostgreSQL connection string
+   - `NEXTAUTH_SECRET`: `openssl rand -base64 32`
+   - `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET`: Google Cloud Console
+   - `NEXTAUTH_URL`: `http://localhost:3000`
 
-### 2. Configurar variables de entorno
+3. Base de datos (Supabase):
+   - Crear proyecto en [Supabase](https://supabase.com)
+   - Copiar Connection String → `DATABASE_URL`
 
-Copiá `.env.example` a `.env` y completá las variables:
+4. Migraciones:
+   ```bash
+   npx prisma migrate dev --name init
+   npx prisma generate
+   ```
 
-```bash
-cp .env.example .env
-```
-
-**Variables necesarias:**
-- `DATABASE_URL`: URL de PostgreSQL
-- `NEXTAUTH_SECRET`: Generalo con `openssl rand -base64 32`
-- `GOOGLE_CLIENT_ID` y `GOOGLE_CLIENT_SECRET`: Desde Google Cloud Console
-- Resto: opcionales para features adicionales
-
-### 3. Configurar base de datos
-
-**Opción A: Supabase (recomendado para demo)**
-
-1. Creá una cuenta en [Supabase](https://supabase.com)
-2. Creá un nuevo proyecto
-3. Copiá el Connection String (Settings → Database → Connection String)
-4. Pegala en `DATABASE_URL` (agregá `?pgbouncer=true` al final)
-
-**Opción B: Vercel Postgres**
-
-```bash
-npx vercel env pull .env.local
-```
-
-### 4. Ejecutar migraciones
-
-```bash
-npx prisma migrate dev --name init
-npx prisma generate
-```
-
-### 5. (Opcional) Cargar datos de ejemplo
-
-```bash
-npx prisma db seed
-```
-
-### 6. Ejecutar en desarrollo
-
-```bash
-npm run dev
-```
-
-Abrí [http://localhost:3000](http://localhost:3000)
+5. Ejecutar: `npm run dev`
 
 ## Scripts
 
-- `npm run dev` - Modo desarrollo
-- `npm run build` - Build de producción
-- `npm run start` - Ejecutar build
-- `npx prisma studio` - UI visual de la base de datos
-- `npx prisma migrate dev` - Crear/aplicar migraciones
-- `npx prisma generate` - Generar Prisma Client
+- `npm run dev` - Desarrollo
+- `npm run build` - Build producción
+- `npm run test` - Tests
+- `npm run test:coverage` - Tests con coverage
+- `npx prisma studio` - UI de base de datos
 
-## Estructura
+## Google OAuth
 
-```
-app/
-├── (auth)/login/          # Página de login
-├── (dashboard)/           # Rutas protegidas
-│   ├── dashboard/         # Dashboard principal
-│   ├── investors/         # CRUD inversores
-│   ├── requests/          # Gestión de solicitudes
-│   └── wallets/           # Gestión de wallets
-└── api/
-    ├── auth/              # NextAuth endpoints
-    └── public/            # API pública para PWA
-lib/
-├── prisma.ts              # Prisma client singleton
-├── auth.ts                # NextAuth config
-└── utils.ts               # Utilidades
-prisma/
-└── schema.prisma          # Database schema
-```
+1. [Google Cloud Console](https://console.cloud.google.com) → Crear proyecto
+2. APIs & Services → Credentials → OAuth client ID
+3. Redirect URI: `http://localhost:3000/api/auth/callback/google`
+4. Copiar Client ID y Secret a `.env`
 
-## Configurar Google OAuth
+## API Pública (PWA)
 
-1. Andá a [Google Cloud Console](https://console.cloud.google.com)
-2. Creá un proyecto nuevo (o usá uno existente)
-3. Habilitá Google+ API
-4. Creá credenciales OAuth 2.0:
-   - Tipo: Web application
-   - Authorized redirect URIs: `http://localhost:3000/api/auth/callback/google`
-   - Para producción agregá: `https://tu-dominio.com/api/auth/callback/google`
-5. Copiá Client ID y Client Secret a `.env`
+- `GET /api/public/investor/:email` - Datos del inversor
+- `GET /api/public/investor/:email/history` - Historial
+- `GET /api/public/wallets` - Wallets habilitadas
+- `POST /api/public/requests` - Crear solicitud
 
-## Base de Datos
+## Próximos Pasos
 
-El schema incluye:
-- `User` - Usuarios admin
-- `Investor` - Inversores
-- `Portfolio` - Estado actual del portfolio
-- `PortfolioHistory` - Historial de movimientos
-- `Wallet` - Direcciones de wallets
-- `Request` - Solicitudes de retiro/depósito
+- Migrar datos desde Google Sheets
+- Conectar winbit-app al backend
+- Implementar autenticación Firebase en API
+- Deploy a producción
 
-Ver `prisma/schema.prisma` para detalles.
+## Documentación
 
-## Deploy
+- `DEMO_READY.md` - Guion para demo
+- `STATUS.md` - Estado del proyecto
+- `TESTING.md` - Tests
+- `SETUP.md` - Setup
 
-### Vercel (recomendado)
-
-```bash
-npx vercel
-```
-
-No olvides configurar las variables de entorno en Vercel Dashboard.
-
-## 🎉 Demo Completada
-
-### ✅ Features Implementadas
-
-- ✅ **CRUD Inversores** (`/investors`)
-  - Lista con tabla completa
-  - Crear nuevo inversor
-  - Ver detalle individual
-  - Activar/desactivar
-
-- ✅ **Gestión Solicitudes** (`/requests`)
-  - Lista con filtros
-  - Aprobar (actualiza balance automático)
-  - Rechazar con notas
-
-- ✅ **API Pública** (`/api/public/*`)
-  - `GET /investor/:email` - Datos del inversor
-  - `GET /investor/:email/history` - Historial
-  - `GET /wallets` - Wallets habilitadas
-  - `POST /requests` - Crear solicitud
-
-- ✅ **Dashboard** - Métricas en tiempo real
-- ✅ **Tests** - 93.1% coverage
-
-### 📋 Próximos Pasos (Post-Demo)
-
-- [ ] Migrar datos desde Google Sheets de Chueco
-- [ ] Conectar winbit-app (PWA) al backend
-- [ ] Implementar autenticación Firebase en API
-- [ ] Deploy a producción (Vercel)
-- [ ] Configurar dominio personalizado
-
-### 📖 Documentación
-
-- **`DEMO_READY.md`** - Guion para mostrar a Chueco
-- **`STATUS.md`** - Estado actual del proyecto
-- **`TESTING.md`** - Documentación de tests
-- **`SETUP.md`** - Setup inicial (completado)
-
-## Licencia
-
-Propiedad de Winbit - Uso interno únicamente
