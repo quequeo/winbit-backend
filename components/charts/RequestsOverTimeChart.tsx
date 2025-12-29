@@ -23,7 +23,7 @@ interface RequestsOverTimeChartProps {
 
 export function RequestsOverTimeChart({ data }: RequestsOverTimeChartProps) {
   return (
-    <div className="h-64">
+    <div className="h-64 w-full" style={{ minHeight: '256px', minWidth: '0' }}>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />

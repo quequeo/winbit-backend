@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { deleteAdmin } from './actions';
+import { DeleteAdminButton } from '@/components/admins/DeleteAdminButton';
 
 export default async function AdminsPage() {
   const admins = await prisma.user.findMany({
@@ -83,24 +83,7 @@ export default async function AdminsPage() {
                             Editar
                           </Button>
                         </Link>
-                        <form action={deleteAdmin.bind(null, admin.id)}>
-                          <Button
-                            type="submit"
-                            variant="destructive"
-                            size="sm"
-                            onClick={(e) => {
-                              if (
-                                !confirm(
-                                  '¿Estás seguro de que querés eliminar este admin?'
-                                )
-                              ) {
-                                e.preventDefault();
-                              }
-                            }}
-                          >
-                            Eliminar
-                          </Button>
-                        </form>
+                        <DeleteAdminButton adminId={admin.id} />
                       </div>
                     </TableCell>
                   </TableRow>

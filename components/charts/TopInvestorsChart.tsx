@@ -22,7 +22,7 @@ interface TopInvestorsChartProps {
 
 export function TopInvestorsChart({ data }: TopInvestorsChartProps) {
   return (
-    <div className="h-64">
+    <div className="h-64 w-full" style={{ minHeight: '256px', minWidth: '0' }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} layout="vertical">
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -35,7 +35,7 @@ export function TopInvestorsChart({ data }: TopInvestorsChartProps) {
             width={100}
           />
           <Tooltip
-            formatter={(value: number) => `$${value.toLocaleString('en-US')}`}
+            formatter={(value: number | undefined) => `$${(value || 0).toLocaleString('en-US')}`}
             contentStyle={{
               backgroundColor: 'white',
               border: '1px solid #e5e7eb',
