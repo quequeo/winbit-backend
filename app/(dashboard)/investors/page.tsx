@@ -10,6 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatName } from '@/lib/utils';
 
 export default async function InvestorsPage() {
   const investors = await prisma.investor.findMany({
@@ -55,7 +56,7 @@ export default async function InvestorsPage() {
                 {investors.map((investor) => (
                   <TableRow key={investor.id}>
                     <TableCell className="font-mono">{investor.code}</TableCell>
-                    <TableCell className="font-medium">{investor.name}</TableCell>
+                    <TableCell className="font-medium">{formatName(investor.name)}</TableCell>
                     <TableCell className="text-gray-600">{investor.email}</TableCell>
                     <TableCell>
                       ${investor.portfolio?.currentBalance?.toLocaleString('en-US') ?? '0'}

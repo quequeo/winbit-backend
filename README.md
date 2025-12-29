@@ -23,10 +23,10 @@ Backend y panel de administración para Winbit. Next.js 16, Prisma, PostgreSQL.
 ## Features
 
 - Autenticación Google OAuth
-- CRUD inversores
+- Gestión de inversores
 - Gestión de solicitudes (aprobar/rechazar)
 - Dashboard con métricas
-- API pública (4 endpoints para PWA)
+- Api pública (4 endpoints para PWA)
 - Historial automático de operaciones
 
 ## Setup
@@ -66,7 +66,7 @@ Backend y panel de administración para Winbit. Next.js 16, Prisma, PostgreSQL.
 3. Redirect URI: `http://localhost:3000/api/auth/callback/google`
 4. Copiar Client ID y Secret a `.env`
 
-## API Pública (PWA)
+## Api Pública (PWA)
 
 - `GET /api/public/investor/:email` - Datos del inversor
 - `GET /api/public/investor/:email/history` - Historial
@@ -77,7 +77,7 @@ Backend y panel de administración para Winbit. Next.js 16, Prisma, PostgreSQL.
 
 - Migrar datos desde Google Sheets
 - Conectar winbit-app al backend
-- Implementar autenticación Firebase en API
+- Implementar autenticación Firebase en Api
 - Deploy a producción
 
 ## Documentación

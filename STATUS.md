@@ -14,7 +14,7 @@
 ### Funcionalidades
 - **Inversores** (`/investors`): Lista, crear, ver detalle, activar/desactivar
 - **Solicitudes** (`/requests`): Lista con filtros, aprobar/rechazar, actualización automática de balance
-- **API Pública** (`/api/public/*`): 4 endpoints para PWA
+- **Api Pública** (`/api/public/*`): 4 endpoints para PWA
 - **Dashboard**: Métricas en tiempo real (inversores, AUM, solicitudes pendientes)
 - **Tests**: 28 tests pasando (93.1% coverage)
 
@@ -51,6 +51,6 @@ curl -X POST http://localhost:3000/api/public/requests \
 
 - Migrar datos desde Google Sheets
 - Conectar winbit-app al backend
-- Implementar autenticación Firebase en API
+- Implementar autenticación Firebase en Api
 - Deploy a producción
 

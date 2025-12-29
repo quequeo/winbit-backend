@@ -47,9 +47,9 @@ export default async function DashboardPage() {
           <li>✅ Proyecto inicializado con Next.js + Prisma</li>
           <li>✅ Autenticación con Google OAuth configurada</li>
           <li>✅ Base de datos Supabase conectada y migrada</li>
-          <li>✅ CRUD de inversores implementado</li>
+          <li>✅ Gestión de inversores implementada</li>
           <li>✅ Gestión de solicitudes (aprobar/rechazar)</li>
-          <li>✅ API pública para PWA creada</li>
+          <li>✅ Api pública para PWA creada</li>
           <li>✅ Tests configurados (93.1% coverage)</li>
           <li>🎯 <strong>Demo lista para mostrar a Chueco</strong></li>
         </ul>

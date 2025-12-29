@@ -6,9 +6,9 @@
 - Prisma + PostgreSQL (Supabase)
 - NextAuth (Google OAuth)
 - shadcn/ui components
-- CRUD inversores
+- Gestión de inversores
 - Gestión de solicitudes
-- API pública (4 endpoints)
+- Api pública (4 endpoints)
 - Dashboard con métricas
 - Tests (93.1% coverage)
 

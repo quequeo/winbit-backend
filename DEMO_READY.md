@@ -16,7 +16,7 @@
 - ✅ Rechazar solicitudes
 - ✅ Registro automático en historial al aprobar
 
-### 3. **API Pública para PWA**
+### 3. **Api Pública para PWA**
 - ✅ `GET /api/public/investor/:email` - Datos del inversor
 - ✅ `GET /api/public/investor/:email/history` - Historial
 - ✅ `GET /api/public/wallets` - Wallets habilitadas
@@ -49,7 +49,7 @@ npx prisma studio
 - Agregar solicitud en tabla `Request` (status: `PENDING`)
 - Ir a `/requests` y aprobarla
 
-## API Pública (PWA)
+## Api Pública (PWA)
 
 Base URL: `http://localhost:3000/api/public`
 

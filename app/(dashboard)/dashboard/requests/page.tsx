@@ -11,6 +11,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { approveRequest, rejectRequest } from './actions';
 import { Filters } from './Filters';
+import { formatName } from '@/lib/utils';
 
 export default async function RequestsPage({
   searchParams,
@@ -98,7 +99,7 @@ export default async function RequestsPage({
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="font-medium">{request.investor.name}</p>
+                        <p className="font-medium">{formatName(request.investor.name)}</p>
                         <p className="text-sm text-gray-500">{request.investor.code}</p>
                       </div>
                     </TableCell>

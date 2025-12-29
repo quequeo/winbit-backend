@@ -39,11 +39,11 @@ npm run test:ci          # CI mode
 - `lib/auth.ts` - Configuración NextAuth
 - `middleware.ts` - Middleware Next.js
 - `app/**/layout.tsx` - Server Components
-- `app/api/**` - API routes (se testearán cuando se implementen)
+- `app/api/**` - Api routes (se testearán cuando se implementen)
 
 ## Próximos Pasos
 
 - Tests para Server Actions
-- Tests para API routes
+- Tests para Api routes
 - Tests para formularios
 

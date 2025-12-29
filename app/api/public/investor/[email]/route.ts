@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import { formatName } from '@/lib/utils';
 
 export async function GET(
   request: NextRequest,
@@ -41,7 +42,7 @@ export async function GET(
     const response = {
       investor: {
         email: investor.email,
-        name: investor.name,
+        name: formatName(investor.name),
         code: investor.code,
       },
       portfolio: investor.portfolio

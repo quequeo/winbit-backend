@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toggleInvestorStatus } from '../actions';
+import { formatName } from '@/lib/utils';
 
 export default async function InvestorDetailPage({
   params,
@@ -74,7 +75,7 @@ export default async function InvestorDetailPage({
             </div>
             <div>
               <p className="text-sm font-medium text-gray-500">Nombre</p>
-              <p className="text-lg">{investor.name}</p>
+              <p className="text-lg">{formatName(investor.name)}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-gray-500">Email</p>
