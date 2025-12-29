@@ -61,6 +61,12 @@ export default async function DashboardLayout({
             >
               Solicitudes
             </Link>
+            <Link
+              href="/dashboard/admins"
+              className="border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-700 hover:border-[#58b098] hover:text-[#58b098]"
+            >
+              Admins
+            </Link>
           </div>
         </nav>
       </header>

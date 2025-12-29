@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
 import type { NextAuthConfig } from 'next-auth';
+import { prisma } from './prisma';
 
 export const authConfig: NextAuthConfig = {
   providers: [
@@ -10,12 +11,32 @@ export const authConfig: NextAuthConfig = {
     }),
   ],
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
+    async authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       
       if (isOnDashboard) {
-        return isLoggedIn;
+        if (!isLoggedIn) {
+          return false;
+        }
+        
+        // Verificar que el email esté en la lista de admins permitidos
+        const userEmail = auth?.user?.email;
+        if (!userEmail) {
+          return false;
+        }
+        
+        const allowedUser = await prisma.user.findUnique({
+          where: { email: userEmail },
+        });
+        
+        if (!allowedUser) {
+          // Retornar false para denegar acceso
+          // El middleware redirigirá a /dashboard/unauthorized
+          return false;
+        }
+        
+        return true;
       }
       return true;
     },
