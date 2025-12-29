@@ -1,0 +1,152 @@
+// Winbit Backend - Prisma Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Admin users (NOT investors)
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      UserRole @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  ADMIN
+  SUPERADMIN
+}
+
+// Investors
+model Investor {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String
+  code      String    @unique
+  status    InvestorStatus @default(ACTIVE)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  portfolio        Portfolio?
+  portfolioHistory PortfolioHistory[]
+  requests         Request[]
+}
+
+enum InvestorStatus {
+  ACTIVE
+  INACTIVE
+}
+
+// Current portfolio state
+model Portfolio {
+  id                         String   @id @default(cuid())
+  investorId                 String   @unique
+  investor                   Investor @relation(fields: [investorId], references: [id], onDelete: Cascade)
+  
+  currentBalance             Float    @default(0)
+  totalInvested              Float    @default(0)
+  accumulatedReturnUSD       Float    @default(0)
+  accumulatedReturnPercent   Float    @default(0)
+  annualReturnUSD            Float    @default(0)
+  annualReturnPercent        Float    @default(0)
+  
+  updatedAt                  DateTime @updatedAt
+}
+
+// Portfolio history (investment events)
+model PortfolioHistory {
+  id              String   @id @default(cuid())
+  investorId      String
+  investor        Investor @relation(fields: [investorId], references: [id], onDelete: Cascade)
+  
+  date            DateTime @default(now())
+  event           String   // e.g., "Depósito", "Retiro", "Rendimiento"
+  amount          Float
+  previousBalance Float
+  newBalance      Float
+  status          HistoryStatus @default(COMPLETED)
+  
+  createdAt       DateTime @default(now())
+  
+  @@index([investorId, date])
+}
+
+enum HistoryStatus {
+  PENDING
+  COMPLETED
+  REJECTED
+}
+
+// Wallet addresses
+model Wallet {
+  id        String   @id @default(cuid())
+  asset     WalletAsset
+  network   WalletNetwork
+  address   String
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([asset, network])
+}
+
+enum WalletAsset {
+  USDT
+  USDC
+}
+
+enum WalletNetwork {
+  TRC20
+  BEP20
+  ERC20
+  POLYGON
+}
+
+// Withdrawal and deposit requests
+model Request {
+  id              String        @id @default(cuid())
+  investorId      String
+  investor        Investor      @relation(fields: [investorId], references: [id], onDelete: Cascade)
+  
+  type            RequestType
+  amount          Float
+  method          RequestMethod
+  status          RequestStatus @default(PENDING)
+  
+  // Optional fields
+  lemontag        String?       // For Lemon Cash
+  transactionHash String?       // For crypto deposits
+  network         WalletNetwork? // For crypto
+  notes           String?       // Admin notes or rejection reason
+  
+  requestedAt     DateTime      @default(now())
+  processedAt     DateTime?
+  
+  @@index([investorId, status])
+  @@index([status, requestedAt])
+}
+
+enum RequestType {
+  DEPOSIT
+  WITHDRAWAL
+}
+
+enum RequestMethod {
+  USDT
+  USDC
+  LEMON_CASH
+  CASH
+  SWIFT
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}

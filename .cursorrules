@@ -1,0 +1,534 @@
+# Winbit Backend - Project Rules
+
+## Project Overview
+
+Winbit Backend is a Next.js application serving as a backoffice/admin panel for Chueco to manage investor data, wallets, deposits, withdrawals, and portfolio performance. It replaces the Google Sheets workflow with a proper database and provides a CRUD interface.
+
+The frontend PWA (winbit-app) will consume this backend's API to display investor data.
+
+## Tech Stack
+
+- **Framework:** Next.js 14+ (App Router)
+- **Database:** PostgreSQL (via Supabase or Vercel Postgres)
+- **ORM:** Prisma
+- **Authentication:** NextAuth.js (Google OAuth for Chueco + email/password for admin)
+- **Styling:** Tailwind CSS + shadcn/ui components
+- **API:** Next.js API Routes (REST or tRPC)
+- **Hosting:** Vercel
+- **Email:** Resend or SendGrid
+- **File uploads:** Vercel Blob or Supabase Storage
+
+## Project Structure
+
+```
+app/
+├── (auth)/
+│   ├── login/
+│   └── register/
+├── (dashboard)/
+│   ├── layout.tsx        # Admin layout with sidebar
+│   ├── page.tsx          # Dashboard home
+│   ├── investors/        # Investor CRUD
+│   ├── investments/      # Investment history CRUD
+│   ├── wallets/          # Wallet management
+│   ├── requests/         # Withdrawal/deposit requests
+│   └── settings/         # App settings
+├── api/
+│   ├── auth/[...nextauth]/
+│   ├── investors/
+│   ├── investments/
+│   ├── wallets/
+│   ├── requests/
+│   └── public/           # Public API for PWA (read-only, auth required)
+├── layout.tsx
+└── page.tsx
+components/
+├── ui/                   # shadcn/ui components
+├── forms/                # Form components
+├── tables/               # Data tables
+└── charts/               # Admin charts
+lib/
+├── prisma.ts             # Prisma client singleton
+├── auth.ts               # NextAuth config
+├── validations/          # Zod schemas
+└── utils/                # Helper functions
+prisma/
+├── schema.prisma
+└── seed.ts
+public/
+```
+
+## Features to Implement
+
+### 1. Authentication (NextAuth.js)
+- Google OAuth for Chueco (admin@winbit.com.ar or his email)
+- Email/password as fallback
+- Protected routes: all admin pages require auth
+- Role-based access: only admin users can access the backoffice
+- Session management with JWT
+- Logout functionality
+
+### 2. Database Schema (Prisma)
+
+**Core Models:**
+- `User` (admin users, NOT investors)
+  - id, email, name, role (admin/superadmin), createdAt, updatedAt
+- `Investor`
+  - id, email, name, code (unique identifier), status (active/inactive), createdAt, updatedAt
+- `Investment`
+  - id, investorId, amount, type (deposit/withdrawal), method (usdt/usdc/lemon/cash/swift), status (pending/approved/rejected), requestedAt, processedAt
+- `Portfolio`
+  - id, investorId, currentBalance, totalInvested, accumulatedReturnUSD, accumulatedReturnPercent, annualReturnUSD, annualReturnPercent, updatedAt
+- `PortfolioHistory`
+  - id, investorId, date, event, amount, previousBalance, newBalance, status
+- `Wallet`
+  - id, asset (USDT/USDC), network (TRC20/BEP20/ERC20/Polygon), address, enabled, createdAt, updatedAt
+- `Request`
+  - id, investorId, type (withdrawal/deposit), amount, method, status, lemontag, transactionHash, notes, requestedAt, processedAt
+
+### 3. Admin Dashboard
+- Overview cards:
+  - Total investors
+  - Total AUM (Assets Under Management)
+  - Pending requests
+  - Monthly performance
+- Charts:
+  - AUM over time
+  - Deposits vs. withdrawals (monthly)
+  - Top 5 investors by balance
+- Recent activity feed
+- Quick actions: approve/reject requests
+
+### 4. Investor Management (CRUD)
+- List all investors (table with search, filter, pagination)
+- Add new investor (email, name, code)
+- Edit investor details
+- View investor profile:
+  - Current balance
+  - Total invested
+  - Returns (USD and %)
+  - Investment history
+  - Request history
+- Deactivate/reactivate investor
+- Export investor data (CSV)
+
+### 5. Investment History (CRUD)
+- List all investments (table with filters: investor, date range, type, status)
+- Add manual investment entry
+- Edit investment details
+- Delete investment (soft delete)
+- Bulk import from CSV (for migrating from Google Sheets)
+- View investment details
+
+### 6. Wallet Management (CRUD)
+- List all wallets (grouped by asset: USDT, USDC)
+- Add new wallet (asset, network, address)
+- Edit wallet details
+- Enable/disable wallet (visible to investors or not)
+- Delete wallet
+
+### 7. Request Management
+- List all requests (table with filters: type, status, date range, investor)
+- View request details
+- Approve request:
+  - Updates investor balance
+  - Sends confirmation email to investor
+  - Marks request as processed
+- Reject request:
+  - Adds rejection note
+  - Sends email to investor
+- Bulk actions: approve/reject multiple requests
+- Export requests (CSV)
+
+### 8. Public API (for PWA)
+- `GET /api/public/investor/:email` - Get investor portfolio data (requires Firebase Auth token)
+- `GET /api/public/investor/:email/history` - Get investment history
+- `GET /api/public/wallets` - Get enabled wallets
+- `POST /api/public/requests` - Submit withdrawal/deposit request
+- Authentication: Verify Firebase ID token or use shared API key
+
+### 9. Settings
+- Manage admin users
+- Configure processing hours
+- Configure email templates
+- Configure Lemon Cash Lemontag
+- View system logs
+- Backup/restore data
+
+### 10. Data Migration Tool
+- Import investors from Google Sheets
+- Import portfolio data from Google Sheets
+- Import history from Google Sheets
+- Dry-run mode (preview before import)
+- Rollback option
+
+## Coding Standards
+
+### General Principles
+- Prefer minimal, simplified solutions
+- Use TypeScript everywhere
+- Use Server Components by default, Client Components only when needed ('use client')
+- Use Server Actions for mutations (forms)
+- Keep components small and focused
+- Extract reusable logic into hooks or utils
+- Use meaningful variable and function names
+
+### TypeScript/TSX Style
+- **ALWAYS use 2 spaces for indentation, NEVER tabs**
+- Use single quotes for strings (`'hello'` not `"hello"`)
+- Always use semicolons at end of statements
+- Max line length: 100 characters
+- Use trailing commas in multiline arrays/objects
+- Use `const` by default
+- Use template literals for string interpolation
+- Use optional chaining (`?.`) and nullish coalescing (`??`)
+- Destructure props when possible
+- One component per file
+
+### File Naming
+- Components: PascalCase (e.g., `InvestorTable.tsx`, `DashboardCard.tsx`)
+- API routes: kebab-case (e.g., `route.ts` in `app/api/investors/[id]/`)
+- Utils/libs: camelCase (e.g., `formatCurrency.ts`, `prisma.ts`)
+- Types: PascalCase (e.g., `types.ts` with `export type Investor = {...}`)
+
+### Next.js Patterns
+- Use App Router (not Pages Router)
+- Use Server Components for data fetching
+- Use Client Components for interactivity ('use client')
+- Use Server Actions for form submissions
+- Use `loading.tsx` for loading states
+- Use `error.tsx` for error boundaries
+- Use route groups for layout organization: `(auth)`, `(dashboard)`
+- Use dynamic routes: `[id]`, `[...slug]`
+
+### Prisma Patterns
+- Define models with proper relations
+- Use `@unique`, `@default`, `@updatedAt` decorators
+- Use enums for status fields
+- Use cascade delete carefully
+- Use transactions for multi-step operations
+- Use `findUniqueOrThrow` for safe lookups
+
+### API Design
+- Use RESTful conventions: GET/POST/PUT/DELETE
+- Return consistent response format:
+  ```ts
+  { data: T } // success
+  { error: string } // error
+  ```
+- Use Zod for request validation
+- Use proper HTTP status codes (200, 201, 400, 401, 404, 500)
+- Handle errors gracefully with try/catch
+- Log errors to console (or logging service)
+
+### Tailwind CSS
+- Use utility classes directly in TSX
+- Use shadcn/ui components for consistency
+- Follow mobile-first approach
+- Use Tailwind's color palette or extend with brand colors
+- Use `cn()` helper for conditional classes
+
+### Authentication
+- Protect all admin routes with middleware
+- Verify Firebase tokens for PWA API requests
+- Use NextAuth session for admin users
+- Store minimal data in JWT (id, email, role)
+
+### Code Examples
+
+**Server Component (data fetching):**
+```tsx
+// app/(dashboard)/investors/page.tsx
+import { prisma } from '@/lib/prisma';
+import { InvestorTable } from '@/components/tables/InvestorTable';
+
+export default async function InvestorsPage() {
+  const investors = await prisma.investor.findMany({
+    include: { portfolio: true },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Investors</h1>
+      <InvestorTable data={investors} />
+    </div>
+  );
+}
+```
+
+**Server Action (form mutation):**
+```tsx
+// app/(dashboard)/investors/actions.ts
+'use server';
+
+import { prisma } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
+
+const createInvestorSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(1),
+  code: z.string().min(1),
+});
+
+export async function createInvestor(formData: FormData) {
+  const data = createInvestorSchema.parse({
+    email: formData.get('email'),
+    name: formData.get('name'),
+    code: formData.get('code'),
+  });
+
+  const investor = await prisma.investor.create({ data });
+  revalidatePath('/investors');
+  return { data: investor };
+}
+```
+
+**API Route (for PWA):**
+```tsx
+// app/api/public/investor/[email]/route.ts
+import { prisma } from '@/lib/prisma';
+import { verifyFirebaseToken } from '@/lib/auth';
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { email: string } }
+) {
+  try {
+    const token = req.headers.get('authorization')?.replace('Bearer ', '');
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const decoded = await verifyFirebaseToken(token);
+    if (decoded.email !== params.email) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    const investor = await prisma.investor.findUnique({
+      where: { email: params.email },
+      include: { portfolio: true },
+    });
+
+    if (!investor) {
+      return NextResponse.json({ error: 'Investor not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ data: investor });
+  } catch (error) {
+    console.error('Error fetching investor:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+```
+
+**Client Component (interactive form):**
+```tsx
+// components/forms/InvestorForm.tsx
+'use client';
+
+import { useState } from 'react';
+import { createInvestor } from '@/app/(dashboard)/investors/actions';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+
+export const InvestorForm = () => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    const formData = new FormData(e.currentTarget);
+    await createInvestor(formData);
+    setLoading(false);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <Input name="email" type="email" placeholder="Email" required />
+      <Input name="name" placeholder="Name" required />
+      <Input name="code" placeholder="Code" required />
+      <Button type="submit" disabled={loading}>
+        {loading ? 'Creating...' : 'Create Investor'}
+      </Button>
+    </form>
+  );
+};
+```
+
+## Environment Variables
+
+```
+# Database
+DATABASE_URL=
+
+# NextAuth
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=
+
+# Google OAuth (for admin login)
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Firebase Admin (to verify PWA tokens)
+FIREBASE_PROJECT_ID=
+FIREBASE_PRIVATE_KEY=
+FIREBASE_CLIENT_EMAIL=
+
+# Email
+RESEND_API_KEY=
+
+# File uploads
+BLOB_READ_WRITE_TOKEN=
+```
+
+## Brand Assets (same as frontend)
+
+- **Brand name:** Winbit
+- **Primary color:** #58b098 (green)
+- **Secondary color:** #ffffff (white)
+- **Accent color:** #e5ebc3 (light yellow)
+- **Typography:** Montserrat (Google Fonts)
+
+## Testing Requirements
+
+### Coverage Target
+- **Minimum 85% line coverage** (admin backoffice, more lenient than PWA's 97%)
+- **Minimum 80% function coverage**
+- **Minimum 70% branch coverage**
+- Run coverage report before every PR
+- Tests pass before merge
+
+### Testing Stack
+- **Test Runner:** Vitest (fast, Vite-compatible)
+- **Component Testing:** React Testing Library
+- **Mocking:** Vitest's vi utilities
+- **Coverage:** Vitest with v8
+
+### What to Test
+
+**Components (UI):**
+- Renders correctly with default props
+- Renders correctly with different prop combinations
+- User interactions (clicks, inputs)
+- Disabled states
+- Different variants/sizes
+
+**Utility Functions:**
+- All functions with various inputs
+- Edge cases (null, undefined, empty)
+- Error cases
+
+**Server Actions (when implemented):**
+- Success responses
+- Error responses
+- Validation logic
+
+**API Routes (when implemented):**
+- Success responses
+- Error responses
+- Authentication checks
+
+**Note:** Server Components and Pages that use auth are complex to test in Next.js App Router. Focus on:
+- UI components (shadcn/ui)
+- Utility functions
+- Client Components
+- Server Actions (when created)
+- API routes (when created)
+
+### Test File Naming
+- Place tests next to source files
+- Name: `ComponentName.test.tsx` or `functionName.test.ts`
+- Example: `Button.test.tsx`, `utils.test.ts`
+
+### Running Tests
+```bash
+# Run all tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run specific test file
+npm run test -- Button.test.tsx
+```
+
+### CI/CD
+- Tests must pass before merge
+- Coverage report generated on every PR
+
+## Git Workflow
+
+### Branches
+- Main branch: `main` (production)
+- Feature branches: `feature/short-description`
+- Bugfix branches: `fix/short-description`
+
+### Commit Messages
+- Single line, imperative mood
+- Under 50 characters
+- Capitalize first letter, no period
+
+### Examples
+```
+Add investor CRUD endpoints
+Add portfolio history table
+Fix request approval logic
+Add migration from Google Sheets
+```
+
+## Priority for Demo (MVP)
+
+### Phase 1 (Essential for demo)
+1. Setup Next.js + Prisma + Supabase
+2. Database schema (Investor, Portfolio, PortfolioHistory, Wallet, Request)
+3. Admin authentication (Google OAuth with NextAuth)
+4. Investor CRUD (list, create, view)
+5. Basic dashboard (total investors, AUM, pending requests)
+6. Request management (list, approve, reject)
+7. Public API for PWA:
+   - GET investor portfolio
+   - GET investor history
+   - POST withdrawal/deposit request
+
+### Phase 2 (Nice to have for demo)
+8. Wallet management
+9. Migration tool from Google Sheets
+10. Email notifications
+11. Charts and analytics
+
+### Phase 3 (Post-demo if approved)
+12. Advanced filters and search
+13. Bulk operations
+14. Export to CSV
+15. System settings
+16. Audit logs
+
+## Notes
+
+- Keep it simple for V1 (demo)
+- Focus on core CRUD and API for PWA
+- UI doesn't need to be perfect (use shadcn/ui defaults)
+- Prioritize functionality over polish
+- Use Supabase free tier (500MB DB, good for demo)
+- Deploy to Vercel free tier
+- Seed database with sample data from Google Sheets for demo
+
+## Learning Goals
+
+- Next.js App Router patterns
+- Server Components vs. Client Components
+- Server Actions for mutations
+- Prisma ORM and migrations
+- API design and authentication
+- Vercel deployment
+
+---
+
+**This is a learning project. Prioritize understanding over perfection. Ship the demo fast, iterate based on feedback.**
+
