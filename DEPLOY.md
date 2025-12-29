@@ -79,11 +79,14 @@ GOOGLE_CLIENT_SECRET=tu-google-client-secret
 1. Ir a [Google Cloud Console](https://console.cloud.google.com)
 2. APIs & Services → Credentials
 3. Editar tu OAuth 2.0 Client ID
-4. Agregar a **Authorized redirect URIs**:
+4. Agregar a **Authorized redirect URIs** (agregar AMBAS URLs):
    ```
    https://tu-proyecto.vercel.app/api/auth/callback/google
+   https://tu-proyecto-[hash]-[usuario].vercel.app/api/auth/callback/google
    ```
+   **Nota**: Vercel puede usar la URL del deployment específico, así que es mejor agregar ambas.
 5. Guardar cambios
+6. **Importante**: Esperar 1-2 minutos para que los cambios se propaguen
 
 ### 6. Ejecutar Migraciones
 
@@ -167,11 +170,17 @@ Puedes configurar variables diferentes para:
 - Si el build falla por Prisma, verificar que `DATABASE_URL` y `DIRECT_URL` están configuradas
 - Re-deploy después de hacer estos cambios
 
-### Error: "Invalid OAuth callback"
+### Error: "Invalid OAuth callback" o "redirect_uri_mismatch"
 
 **Solución**:
-- Verificar que `NEXTAUTH_URL` en Vercel es `https://tu-proyecto.vercel.app`
+- Verificar que `NEXTAUTH_URL` en Vercel es exactamente `https://tu-proyecto.vercel.app` (sin trailing slash `/`)
 - Verificar que el redirect URI en Google Cloud Console coincide exactamente
+- Agregar AMBAS URLs en Google Cloud Console:
+  - `https://tu-proyecto.vercel.app/api/auth/callback/google`
+  - `https://tu-proyecto-[hash]-[usuario].vercel.app/api/auth/callback/google`
+- Esperar 1-2 minutos después de guardar cambios en Google Cloud Console
+- Hacer re-deploy en Vercel después de actualizar `NEXTAUTH_URL`
+- Verificar que no hay espacios o caracteres especiales en `NEXTAUTH_URL`
 
 ### Error: "Migration failed"
 
