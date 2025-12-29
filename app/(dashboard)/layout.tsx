@@ -50,6 +50,12 @@ export default async function DashboardLayout({
               Inversores
             </Link>
             <Link
+              href="/dashboard/portfolios"
+              className="border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-700 hover:border-[#58b098] hover:text-[#58b098]"
+            >
+              Portfolios
+            </Link>
+            <Link
               href="/dashboard/requests"
               className="border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-700 hover:border-[#58b098] hover:text-[#58b098]"
             >
