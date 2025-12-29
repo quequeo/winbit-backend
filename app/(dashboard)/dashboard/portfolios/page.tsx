@@ -28,7 +28,12 @@ export default async function PortfoliosPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-900">Portfolios</h1>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Portfolios</h1>
+          <p className="text-gray-600 mt-1">
+            Haz clic en "Editar Portfolio" para modificar los datos de inversión de cada inversor
+          </p>
+        </div>
       </div>
 
       <Card>
@@ -121,8 +126,8 @@ export default async function PortfoliosPage() {
                       </TableCell>
                       <TableCell className="text-right">
                         <Link href={`/dashboard/portfolios/${investor.id}`}>
-                          <Button variant="ghost" size="sm">
-                            Editar
+                          <Button size="sm">
+                            Editar Portfolio
                           </Button>
                         </Link>
                       </TableCell>
