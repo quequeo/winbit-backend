@@ -12,7 +12,9 @@
     "test:watch": "vitest --watch",
     "test:coverage": "vitest run --coverage",
     "test:ci": "vitest run --coverage --reporter=verbose",
-    "seed:admins": "tsx scripts/seed-admins.ts"
+    "seed:admins": "tsx scripts/seed-admins.ts",
+    "seed:investors": "tsx scripts/seed-investors.ts",
+    "seed:requests": "tsx scripts/seed-requests.ts"
   },
   "prisma": {
     "seed": "echo 'No seed script'"

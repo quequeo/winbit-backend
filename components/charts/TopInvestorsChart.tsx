@@ -9,7 +9,9 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
+  Cell,
 } from 'recharts';
+import { useEffect, useState } from 'react';
 
 interface TopInvestor {
   name: string;
@@ -21,6 +23,16 @@ interface TopInvestorsChartProps {
 }
 
 export function TopInvestorsChart({ data }: TopInvestorsChartProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div className="h-64 w-full flex items-center justify-center text-gray-500">Cargando...</div>;
+  }
+
   return (
     <div className="h-64 w-full" style={{ minHeight: '256px', minWidth: '0' }}>
       <ResponsiveContainer width="100%" height="100%">
@@ -43,7 +55,21 @@ export function TopInvestorsChart({ data }: TopInvestorsChartProps) {
             }}
           />
           <Legend />
-          <Bar dataKey="balance" fill="#58b098" radius={[0, 4, 4, 0]} />
+          <Bar dataKey="balance" radius={[0, 4, 4, 0]}>
+            {data.map((entry, index) => {
+              // Gradiente de colores: del más claro al más oscuro
+              const colors = [
+                '#58b098', // Verde principal (más claro)
+                '#4a9d87', // Verde medio-claro
+                '#3d8a76', // Verde medio
+                '#2f7765', // Verde medio-oscuro
+                '#256454', // Verde oscuro (más oscuro)
+              ];
+              return (
+                <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+              );
+            })}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>

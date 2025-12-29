@@ -1,6 +1,7 @@
 'use client';
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { useEffect, useState } from 'react';
 
 interface RequestsByTypeChartProps {
   depositCount: number;
@@ -13,10 +14,20 @@ export function RequestsByTypeChart({
   depositCount,
   withdrawalCount,
 }: RequestsByTypeChartProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const data = [
     { name: 'Depósitos', value: depositCount },
     { name: 'Retiros', value: withdrawalCount },
   ];
+
+  if (!mounted) {
+    return <div className="h-64 w-full flex items-center justify-center text-gray-500">Cargando...</div>;
+  }
 
   return (
     <div className="h-64 w-full" style={{ minHeight: '256px', minWidth: '0' }}>

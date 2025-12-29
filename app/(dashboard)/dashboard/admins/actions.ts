@@ -73,11 +73,22 @@ export async function updateAdmin(id: string, formData: FormData) {
   redirect('/dashboard/admins');
 }
 
-export async function deleteAdmin(id: string) {
+export async function deleteAdmin(id: string, currentUserEmail?: string) {
   // Verificar que no sea el último admin
   const adminCount = await prisma.user.count();
   if (adminCount <= 1) {
     throw new Error('No se puede eliminar el último admin');
+  }
+
+  // Verificar que el usuario actual sea SUPERADMIN
+  if (currentUserEmail) {
+    const currentUser = await prisma.user.findUnique({
+      where: { email: currentUserEmail },
+    });
+
+    if (!currentUser || currentUser.role !== 'SUPERADMIN') {
+      throw new Error('Solo los Super Admins pueden eliminar otros administradores');
+    }
   }
 
   await prisma.user.delete({

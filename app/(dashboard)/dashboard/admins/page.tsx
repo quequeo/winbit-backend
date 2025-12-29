@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { auth } from '@/lib/auth';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,11 +14,22 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DeleteAdminButton } from '@/components/admins/DeleteAdminButton';
 
 export default async function AdminsPage() {
+  const session = await auth();
+  const currentUserEmail = session?.user?.email;
+
   const admins = await prisma.user.findMany({
     orderBy: {
       createdAt: 'desc',
     },
   });
+
+  // Obtener el rol del usuario actual
+  const currentUser = currentUserEmail
+    ? await prisma.user.findUnique({
+        where: { email: currentUserEmail },
+      })
+    : null;
+  const isSuperAdmin = currentUser?.role === 'SUPERADMIN';
 
   return (
     <div className="space-y-6">
@@ -83,7 +95,12 @@ export default async function AdminsPage() {
                             Editar
                           </Button>
                         </Link>
-                        <DeleteAdminButton adminId={admin.id} />
+                        {isSuperAdmin && (
+                          <DeleteAdminButton
+                            adminId={admin.id}
+                            currentUserEmail={currentUserEmail || undefined}
+                          />
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>

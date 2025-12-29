@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts';
+import { useEffect, useState } from 'react';
 
 interface RequestData {
   month: string;
@@ -22,6 +23,16 @@ interface RequestsOverTimeChartProps {
 }
 
 export function RequestsOverTimeChart({ data }: RequestsOverTimeChartProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div className="h-64 w-full flex items-center justify-center text-gray-500">Cargando...</div>;
+  }
+
   return (
     <div className="h-64 w-full" style={{ minHeight: '256px', minWidth: '0' }}>
       <ResponsiveContainer width="100%" height="100%">
