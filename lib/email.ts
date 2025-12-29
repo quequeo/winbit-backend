@@ -22,11 +22,19 @@ export async function sendDepositApprovedEmail(
   }
 
   try {
-    // Si RESEND_FROM_EMAIL no tiene formato "Nombre <email>", agregarlo
-    let fromEmail = process.env.RESEND_FROM_EMAIL || 'Winbit <noreply@winbit.com>';
+    // Resend no permite usar Gmail directamente. Usar dominio de prueba o dominio verificado.
+    // Si RESEND_FROM_EMAIL no está configurado, usar el dominio de prueba de Resend
+    let fromEmail = process.env.RESEND_FROM_EMAIL || 'Winbit <onboarding@resend.dev>';
+    
     if (fromEmail && !fromEmail.includes('<')) {
-      // Si solo es un email, agregar formato
-      fromEmail = `Winbit <${fromEmail}>`;
+      // Si solo es un email, verificar que no sea Gmail
+      if (fromEmail.includes('@gmail.com')) {
+        console.warn('⚠️  Resend no permite usar Gmail. Usando dominio de prueba de Resend.');
+        fromEmail = 'Winbit <onboarding@resend.dev>';
+      } else {
+        // Si no es Gmail, agregar formato
+        fromEmail = `Winbit <${fromEmail}>`;
+      }
     }
     
     const methodDisplay = data.method === 'USDT' || data.method === 'USDC' 

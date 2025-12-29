@@ -74,7 +74,7 @@ RESEND_FROM_EMAIL=Winbit <noreply@tudominio.com> (opcional)
 - `GOOGLE_SHEETS_ID`: ID de la planilla de Google Sheets (obtener de la URL: `https://docs.google.com/spreadsheets/d/[SHEET_ID]/edit`)
 - `GOOGLE_SHEETS_API_KEY`: API Key de Google Sheets (crear en [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials → Create Credentials → API Key)
 - `RESEND_API_KEY`: (Opcional) API Key de Resend para enviar emails. Crear en [resend.com](https://resend.com/api-keys). Si no se configura, los emails no se enviarán pero el sistema seguirá funcionando.
-- `RESEND_FROM_EMAIL`: (Opcional) Email desde el cual se enviarán los correos. Formato: `Nombre <email@dominio.com>`. Debe estar verificado en Resend.
+- `RESEND_FROM_EMAIL`: (Opcional) Email desde el cual se enviarán los correos. Formato: `Nombre <email@dominio.com>`. **NO puede ser Gmail**. Usar dominio verificado en Resend o dejar vacío para usar `onboarding@resend.dev` (solo desarrollo).
 
 **Troubleshooting URL:**
 - Si la URL tiene espacios, elimínalos
@@ -89,8 +89,22 @@ Si querés que se envíen emails automáticamente cuando se aprueban depósitos:
 1. Crear cuenta en [Resend](https://resend.com) (gratis hasta 3,000 emails/mes)
 2. Ir a [API Keys](https://resend.com/api-keys) → Create API Key
 3. Copiar la API Key → Agregar como `RESEND_API_KEY` en Vercel
-4. Verificar un dominio o usar el dominio de prueba de Resend
-5. Configurar `RESEND_FROM_EMAIL` en formato: `Winbit <noreply@tudominio.com>`
+
+**Configurar el email remitente:**
+
+**Opción A: Usar dominio de prueba (rápido, solo para desarrollo)**
+- No configures `RESEND_FROM_EMAIL` o usa: `Winbit <onboarding@resend.dev>`
+- ⚠️ Los emails pueden ir a spam y solo funcionan para desarrollo
+
+**Opción B: Verificar tu propio dominio (recomendado para producción)**
+1. Ir a [Resend → Domains](https://resend.com/domains)
+2. Click en "Add Domain"
+3. Ingresar tu dominio (ej: `winbit.com`)
+4. Agregar los registros DNS que Resend te indique
+5. Esperar verificación (puede tardar unos minutos)
+6. Configurar `RESEND_FROM_EMAIL` en formato: `Winbit <noreply@tudominio.com>`
+
+**⚠️ Importante**: Resend NO permite usar Gmail (`@gmail.com`) como remitente. Debes usar un dominio propio o el dominio de prueba.
 
 **Nota**: Si no configurás Resend, el sistema funcionará normalmente pero no enviará emails. Los emails se loguearán en la consola en desarrollo.
 
