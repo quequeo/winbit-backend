@@ -25,7 +25,7 @@ export default async function InvestorsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">Inversores</h1>
-        <Link href="/investors/new">
+        <Link href="/dashboard/investors/new">
           <Button>Agregar Inversor</Button>
         </Link>
       </div>
@@ -72,7 +72,7 @@ export default async function InvestorsPage() {
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Link href={`/investors/${investor.id}`}>
+                      <Link href={`/dashboard/investors/${investor.id}`}>
                         <Button variant="ghost" size="sm">
                           Ver
                         </Button>

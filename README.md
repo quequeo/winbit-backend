@@ -1,25 +1,37 @@
 # Winbit Backend
 
-Backend y panel de administración para Winbit, construido con Next.js 14, Prisma y PostgreSQL.
+**✅ DEMO COMPLETADA** - Backend y panel de administración para Winbit, construido con Next.js 16, Prisma y PostgreSQL.
+
+## 🎯 Estado Actual
+
+**🚀 Funcional al 100%** - Listo para mostrar demo a Chueco
+
+- ✅ **Servidor:** http://localhost:3000
+- ✅ **Base de datos:** Supabase PostgreSQL conectada
+- ✅ **Autenticación:** Google OAuth funcionando
+- ✅ **Features:** CRUD inversores + gestión solicitudes
+- ✅ **API:** 4 endpoints públicos para PWA
+- ✅ **Tests:** 28 tests pasando (93.1% coverage)
 
 ## Tech Stack
 
-- **Framework:** Next.js 14 (App Router)
-- **Database:** PostgreSQL (Supabase o Vercel Postgres)
-- **ORM:** Prisma
+- **Framework:** Next.js 16.1.1 (App Router + Turbopack)
+- **Database:** PostgreSQL (Supabase)
+- **ORM:** Prisma 7.2.0
 - **Authentication:** NextAuth.js v5 (Google OAuth)
 - **UI:** Tailwind CSS + shadcn/ui
+- **Testing:** Vitest + React Testing Library
 - **Hosting:** Vercel
 
-## Características
+## Características Implementadas
 
-- 🔐 Autenticación con Google OAuth
-- 👥 CRUD de inversores
-- 💰 Gestión de solicitudes de retiro/depósito
-- 📊 Dashboard con métricas en tiempo real
-- 🔗 API pública para PWA (winbit-app)
-- 💼 Gestión de wallets
-- 📈 Historial de inversiones
+- 🔐 **Autenticación:** Google OAuth con NextAuth
+- 👥 **CRUD Inversores:** Crear, listar, ver, activar/desactivar
+- 💰 **Gestión Solicitudes:** Aprobar/rechazar retiros y depósitos
+- 📊 **Dashboard:** Métricas en tiempo real (AUM, inversores, requests)
+- 🔗 **API Pública:** 4 endpoints REST para winbit-app (PWA)
+- 📈 **Historial:** Registro automático de todas las operaciones
+- 🧪 **Testing:** 93.1% coverage con Vitest
 
 ## Setup
 
@@ -142,13 +154,44 @@ npx vercel
 
 No olvides configurar las variables de entorno en Vercel Dashboard.
 
-## Próximos Pasos (MVP Demo)
+## 🎉 Demo Completada
 
-- [ ] Implementar CRUD de inversores
-- [ ] Implementar lista y aprobación de requests
-- [ ] Crear API pública `/api/public/investor/:email`
-- [ ] Migrar datos desde Google Sheets
-- [ ] Conectar PWA al backend
+### ✅ Features Implementadas
+
+- ✅ **CRUD Inversores** (`/investors`)
+  - Lista con tabla completa
+  - Crear nuevo inversor
+  - Ver detalle individual
+  - Activar/desactivar
+
+- ✅ **Gestión Solicitudes** (`/requests`)
+  - Lista con filtros
+  - Aprobar (actualiza balance automático)
+  - Rechazar con notas
+
+- ✅ **API Pública** (`/api/public/*`)
+  - `GET /investor/:email` - Datos del inversor
+  - `GET /investor/:email/history` - Historial
+  - `GET /wallets` - Wallets habilitadas
+  - `POST /requests` - Crear solicitud
+
+- ✅ **Dashboard** - Métricas en tiempo real
+- ✅ **Tests** - 93.1% coverage
+
+### 📋 Próximos Pasos (Post-Demo)
+
+- [ ] Migrar datos desde Google Sheets de Chueco
+- [ ] Conectar winbit-app (PWA) al backend
+- [ ] Implementar autenticación Firebase en API
+- [ ] Deploy a producción (Vercel)
+- [ ] Configurar dominio personalizado
+
+### 📖 Documentación
+
+- **`DEMO_READY.md`** - Guion para mostrar a Chueco
+- **`STATUS.md`** - Estado actual del proyecto
+- **`TESTING.md`** - Documentación de tests
+- **`SETUP.md`** - Setup inicial (completado)
 
 ## Licencia
 

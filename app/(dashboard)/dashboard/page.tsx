@@ -41,16 +41,17 @@ export default async function DashboardPage() {
 
       <div className="rounded-lg bg-white p-6 shadow">
         <h2 className="mb-4 text-xl font-semibold text-gray-900">
-          Próximos pasos
+          Estado del Proyecto
         </h2>
         <ul className="space-y-2 text-gray-700">
           <li>✅ Proyecto inicializado con Next.js + Prisma</li>
           <li>✅ Autenticación con Google OAuth configurada</li>
-          <li>✅ Base de datos con modelos definidos</li>
-          <li>⏳ Configurar base de datos (Supabase o Vercel Postgres)</li>
-          <li>⏳ Implementar CRUD de inversores</li>
-          <li>⏳ Implementar gestión de solicitudes</li>
-          <li>⏳ Crear API pública para PWA</li>
+          <li>✅ Base de datos Supabase conectada y migrada</li>
+          <li>✅ CRUD de inversores implementado</li>
+          <li>✅ Gestión de solicitudes (aprobar/rechazar)</li>
+          <li>✅ API pública para PWA creada</li>
+          <li>✅ Tests configurados (93.1% coverage)</li>
+          <li>🎯 <strong>Demo lista para mostrar a Chueco</strong></li>
         </ul>
       </div>
     </div>

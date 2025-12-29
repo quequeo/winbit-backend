@@ -55,8 +55,8 @@ export async function createInvestor(formData: FormData) {
     },
   });
 
-  revalidatePath('/investors');
-  redirect('/investors');
+  revalidatePath('/dashboard/investors');
+  redirect('/dashboard/investors');
 }
 
 export async function updateInvestor(id: string, formData: FormData) {
@@ -90,9 +90,9 @@ export async function updateInvestor(id: string, formData: FormData) {
     },
   });
 
-  revalidatePath('/investors');
-  revalidatePath(`/investors/${id}`);
-  redirect('/investors');
+  revalidatePath('/dashboard/investors');
+  revalidatePath(`/dashboard/investors/${id}`);
+  redirect('/dashboard/investors');
 }
 
 export async function toggleInvestorStatus(id: string) {
@@ -111,7 +111,7 @@ export async function toggleInvestorStatus(id: string) {
     },
   });
 
-  revalidatePath('/investors');
-  revalidatePath(`/investors/${id}`);
+  revalidatePath('/dashboard/investors');
+  revalidatePath(`/dashboard/investors/${id}`);
 }
 

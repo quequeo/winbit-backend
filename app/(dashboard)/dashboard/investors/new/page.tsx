@@ -9,7 +9,7 @@ export default function NewInvestorPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">Agregar Inversor</h1>
-        <Link href="/investors">
+        <Link href="/dashboard/investors">
           <Button variant="outline">Volver</Button>
         </Link>
       </div>
@@ -72,7 +72,7 @@ export default function NewInvestorPage() {
               <Button type="submit" className="flex-1">
                 Crear Inversor
               </Button>
-              <Link href="/investors" className="flex-1">
+              <Link href="/dashboard/investors" className="flex-1">
                 <Button type="button" variant="outline" className="w-full">
                   Cancelar
                 </Button>

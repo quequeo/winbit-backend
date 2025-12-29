@@ -43,7 +43,7 @@ export default async function InvestorDetailPage({
               {investor.status === 'ACTIVE' ? 'Desactivar' : 'Activar'}
             </Button>
           </form>
-          <Link href="/investors">
+          <Link href="/dashboard/investors">
             <Button variant="outline">Volver</Button>
           </Link>
         </div>

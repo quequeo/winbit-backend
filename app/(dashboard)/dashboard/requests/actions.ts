@@ -72,9 +72,9 @@ export async function approveRequest(requestId: string) {
     }),
   ]);
 
-  revalidatePath('/requests');
+  revalidatePath('/dashboard/requests');
   revalidatePath('/dashboard');
-  revalidatePath(`/investors/${request.investorId}`);
+  revalidatePath(`/dashboard/investors/${request.investorId}`);
 }
 
 export async function rejectRequest(requestId: string) {
@@ -99,8 +99,8 @@ export async function rejectRequest(requestId: string) {
     },
   });
 
-  revalidatePath('/requests');
+  revalidatePath('/dashboard/requests');
   revalidatePath('/dashboard');
-  revalidatePath(`/investors/${request.investorId}`);
+  revalidatePath(`/dashboard/investors/${request.investorId}`);
 }
 

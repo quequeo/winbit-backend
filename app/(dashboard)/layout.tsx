@@ -44,13 +44,13 @@ export default async function DashboardLayout({
               Dashboard
             </Link>
             <Link
-              href="/investors"
+              href="/dashboard/investors"
               className="border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-700 hover:border-[#58b098] hover:text-[#58b098]"
             >
               Inversores
             </Link>
             <Link
-              href="/requests"
+              href="/dashboard/requests"
               className="border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-700 hover:border-[#58b098] hover:text-[#58b098]"
             >
               Solicitudes
