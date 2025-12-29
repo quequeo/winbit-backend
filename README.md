@@ -25,9 +25,10 @@ Backend y panel de administración para Winbit. Next.js 16, Prisma, PostgreSQL.
 - Autenticación Google OAuth
 - Gestión de inversores
 - Gestión de solicitudes (aprobar/rechazar)
-- Dashboard con métricas y tabla de Google Sheets (solapa DASHBOARD)
+- Dashboard con métricas y gráficos
 - Api pública (4 endpoints para PWA)
 - Historial automático de operaciones
+- Notificaciones por email al aprobar depósitos
 
 ## Setup
 
@@ -40,6 +41,8 @@ Backend y panel de administración para Winbit. Next.js 16, Prisma, PostgreSQL.
    - `NEXTAUTH_URL`: `http://localhost:3000`
    - `GOOGLE_SHEETS_ID`: ID de la planilla de Google Sheets
    - `GOOGLE_SHEETS_API_KEY`: API Key de Google Sheets
+   - `RESEND_API_KEY`: (Opcional) API Key de Resend para emails. Si no se configura, los emails no se enviarán.
+   - `RESEND_FROM_EMAIL`: (Opcional) Email desde el cual enviar. Formato: `Nombre <email@dominio.com>`
 
 3. Base de datos (Supabase):
    - Crear proyecto en [Supabase](https://supabase.com)
@@ -84,8 +87,6 @@ Backend y panel de administración para Winbit. Next.js 16, Prisma, PostgreSQL.
 
 ## Documentación
 
-- `DEMO_READY.md` - Guion para demo
-- `STATUS.md` - Estado del proyecto
-- `TESTING.md` - Tests
-- `SETUP.md` - Setup
+- `DEPLOY.md` - Guía de deployment en Vercel
+- `TESTING.md` - Información sobre tests y coverage
 

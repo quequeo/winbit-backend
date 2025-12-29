@@ -61,6 +61,8 @@ GOOGLE_CLIENT_ID=tu-google-client-id
 GOOGLE_CLIENT_SECRET=tu-google-client-secret
 GOOGLE_SHEETS_ID=tu-google-sheets-id
 GOOGLE_SHEETS_API_KEY=tu-google-sheets-api-key
+RESEND_API_KEY=re_xxxxxxxxxxxxx (opcional, para emails)
+RESEND_FROM_EMAIL=Winbit <noreply@tudominio.com> (opcional)
 ```
 
 **Importante:**
@@ -71,6 +73,8 @@ GOOGLE_SHEETS_API_KEY=tu-google-sheets-api-key
 - `NEXTAUTH_URL`: Se actualizará automáticamente después del primer deploy
 - `GOOGLE_SHEETS_ID`: ID de la planilla de Google Sheets (obtener de la URL: `https://docs.google.com/spreadsheets/d/[SHEET_ID]/edit`)
 - `GOOGLE_SHEETS_API_KEY`: API Key de Google Sheets (crear en [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials → Create Credentials → API Key)
+- `RESEND_API_KEY`: (Opcional) API Key de Resend para enviar emails. Crear en [resend.com](https://resend.com/api-keys). Si no se configura, los emails no se enviarán pero el sistema seguirá funcionando.
+- `RESEND_FROM_EMAIL`: (Opcional) Email desde el cual se enviarán los correos. Formato: `Nombre <email@dominio.com>`. Debe estar verificado en Resend.
 
 **Troubleshooting URL:**
 - Si la URL tiene espacios, elimínalos
@@ -78,7 +82,19 @@ GOOGLE_SHEETS_API_KEY=tu-google-sheets-api-key
 - Ejemplo: `@` → `%40`, `:` → `%3A`, `/` → `%2F`
 - O mejor: copiar directamente desde Supabase sin modificar
 
-### 5. Actualizar Google OAuth
+### 5. Configurar Resend (Opcional - para emails)
+
+Si querés que se envíen emails automáticamente cuando se aprueban depósitos:
+
+1. Crear cuenta en [Resend](https://resend.com) (gratis hasta 3,000 emails/mes)
+2. Ir a [API Keys](https://resend.com/api-keys) → Create API Key
+3. Copiar la API Key → Agregar como `RESEND_API_KEY` en Vercel
+4. Verificar un dominio o usar el dominio de prueba de Resend
+5. Configurar `RESEND_FROM_EMAIL` en formato: `Winbit <noreply@tudominio.com>`
+
+**Nota**: Si no configurás Resend, el sistema funcionará normalmente pero no enviará emails. Los emails se loguearán en la consola en desarrollo.
+
+### 6. Actualizar Google OAuth
 
 1. Ir a [Google Cloud Console](https://console.cloud.google.com)
 2. APIs & Services → Credentials
@@ -92,7 +108,7 @@ GOOGLE_SHEETS_API_KEY=tu-google-sheets-api-key
 5. Guardar cambios
 6. **Importante**: Esperar 1-2 minutos para que los cambios se propaguen
 
-### 6. Ejecutar Migraciones
+### 7. Ejecutar Migraciones
 
 **Primera vez**: Ejecutar las migraciones manualmente antes del primer deploy:
 
@@ -109,7 +125,7 @@ npx prisma migrate deploy
 
 **Nota**: El script de build genera Prisma Client pero NO ejecuta migraciones automáticamente para evitar que el build falle si hay problemas de conexión.
 
-### 7. Deploy
+### 8. Deploy
 
 1. Click en **Deploy** en Vercel
 2. Esperar a que termine el build

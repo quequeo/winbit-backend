@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { sendDepositApprovedEmail } from '@/lib/email';
 
 export async function approveRequest(requestId: string) {
   const request = await prisma.request.findUnique({
@@ -71,6 +72,24 @@ export async function approveRequest(requestId: string) {
       },
     }),
   ]);
+
+  // Enviar email si es un depósito aprobado
+  if (request.type === 'DEPOSIT') {
+    try {
+      await sendDepositApprovedEmail({
+        investorName: request.investor.name,
+        investorEmail: request.investor.email,
+        amount: request.amount,
+        newBalance,
+        method: request.method,
+        network: request.network || undefined,
+        transactionHash: request.transactionHash || undefined,
+      });
+    } catch (error) {
+      // No fallar la aprobación si el email falla, solo loguear
+      console.error('Error enviando email de depósito aprobado:', error);
+    }
+  }
 
   revalidatePath('/dashboard/requests');
   revalidatePath('/dashboard');
