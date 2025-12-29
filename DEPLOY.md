@@ -25,28 +25,54 @@ git push origin main
 ### 3. Configurar el Proyecto en Vercel
 
 1. **Import Project**: Seleccionar el repositorio `winbit-backend`
-2. **Framework Preset**: Next.js (detectado automáticamente)
+2. **Framework Preset**: Next.js (detectado automáticamente) - **NO cambiar esto**
 3. **Root Directory**: `./` (raíz del proyecto)
-4. **Build Command**: `npm run build` (ya configurado)
-5. **Output Directory**: `.next` (default)
-6. **Install Command**: `npm install` (default)
+4. **Build Command**: Dejar vacío (Vercel usa `npm run build` automáticamente)
+5. **Output Directory**: Dejar vacío (Vercel detecta `.next` automáticamente)
+6. **Install Command**: Dejar vacío (Vercel usa `npm install` automáticamente)
+
+**Importante**: No crear `vercel.json` ni sobrescribir estas configuraciones. Vercel detecta Next.js automáticamente y las configura correctamente.
 
 ### 4. Configurar Variables de Entorno
 
 En Vercel Dashboard → Settings → Environment Variables, agregar:
 
+#### Obtener URLs de Supabase
+
+1. Ir a tu proyecto en [Supabase Dashboard](https://supabase.com/dashboard)
+2. Settings → Database
+3. En "Connection string", seleccionar:
+   - **Connection pooling** → **Session mode** → Copiar la URL (para `DATABASE_URL`)
+   - **Direct connection** → Copiar la URL (para `DIRECT_URL` - solo para migraciones)
+
+**Formato esperado:**
 ```
-DATABASE_URL=postgresql://user:password@host:port/database?sslmode=require
+postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?sslmode=require
+```
+
+#### Variables a Configurar en Vercel
+
+```
+DATABASE_URL=postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres?sslmode=require
+DIRECT_URL=postgresql://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres?sslmode=require
 NEXTAUTH_SECRET=tu-secret-generado-con-openssl-rand-base64-32
 NEXTAUTH_URL=https://tu-proyecto.vercel.app
 GOOGLE_CLIENT_ID=tu-google-client-id
 GOOGLE_CLIENT_SECRET=tu-google-client-secret
 ```
 
-**Nota**: 
-- `DATABASE_URL`: Usar la connection string de Supabase (production)
+**Importante:**
+- `DATABASE_URL`: Usar la URL de **Connection pooling** (Session mode) - puerto **6543**
+- `DIRECT_URL`: Usar la URL de **Direct connection** - puerto **5432** (solo para migraciones)
+- Si tu password tiene caracteres especiales, asegúrate de que estén URL-encoded en la string
 - `NEXTAUTH_SECRET`: Generar uno nuevo: `openssl rand -base64 32`
 - `NEXTAUTH_URL`: Se actualizará automáticamente después del primer deploy
+
+**Troubleshooting URL:**
+- Si la URL tiene espacios, elimínalos
+- Si tiene caracteres especiales (`@`, `:`, `/`, `?`, `#`, `[`, `]`), deben estar URL-encoded
+- Ejemplo: `@` → `%40`, `:` → `%3A`, `/` → `%2F`
+- O mejor: copiar directamente desde Supabase sin modificar
 
 ### 5. Actualizar Google OAuth
 
@@ -61,18 +87,20 @@ GOOGLE_CLIENT_SECRET=tu-google-client-secret
 
 ### 6. Ejecutar Migraciones
 
-Vercel ejecutará `prisma migrate deploy` automáticamente durante el build (incluido en el script `build`).
-
-Si necesitas ejecutarlas manualmente:
+**Primera vez**: Ejecutar las migraciones manualmente antes del primer deploy:
 
 ```bash
-# Opción A: Desde Vercel CLI
-vercel env pull .env.local
+# Opción A: Desde tu máquina local
+# Configurar DATABASE_URL y DIRECT_URL en .env.local
 npx prisma migrate deploy
 
 # Opción B: Desde Supabase Dashboard
-# Ejecutar las migraciones SQL directamente
+# Ejecutar las migraciones SQL directamente desde prisma/migrations/
 ```
+
+**Después del deploy**: Las migraciones se ejecutarán automáticamente si agregas un Build Hook o las ejecutas manualmente cuando sea necesario.
+
+**Nota**: El script de build genera Prisma Client pero NO ejecuta migraciones automáticamente para evitar que el build falle si hay problemas de conexión.
 
 ### 7. Deploy
 
@@ -114,12 +142,30 @@ Puedes configurar variables diferentes para:
 - Verificar que `prisma generate` está en `package.json` → `postinstall`
 - Re-deploy en Vercel
 
-### Error: "Database connection failed"
+### Error: "Database connection failed" o "invalid port number"
 
 **Solución**:
-- Verificar `DATABASE_URL` en Vercel Environment Variables
+- Verificar que `DATABASE_URL` usa el puerto **6543** (Connection pooling)
+- Verificar que `DIRECT_URL` usa el puerto **5432** (Direct connection)
+- Asegurarse de copiar la URL completa desde Supabase sin modificar
+- Si el password tiene caracteres especiales, verificar que estén correctamente en la URL
+- Verificar que no hay espacios al inicio/final de la URL en Vercel
 - Asegurarse de que Supabase permite conexiones desde Vercel (whitelist IPs si es necesario)
 - Verificar que la connection string incluye `?sslmode=require`
+- **Pro tip**: Copiar la URL directamente desde Supabase Dashboard sin editar manualmente
+
+### Error: "routes-manifest.json couldn't be found" o "The file `.next`/routes-manifest.json couldn't be found"
+
+**Solución**:
+- **Eliminar `vercel.json`** si existe (Vercel detecta Next.js automáticamente)
+- Verificar que el build se completa correctamente (revisar logs de build)
+- Asegurarse de que no hay errores en el script de build
+- En Vercel Dashboard → Settings → General, verificar:
+  - Framework Preset: **Next.js** (no cambiar)
+  - Build Command: **vacío** (dejar que Vercel use el default)
+  - Output Directory: **vacío** (dejar que Vercel detecte `.next`)
+- Si el build falla por Prisma, verificar que `DATABASE_URL` y `DIRECT_URL` están configuradas
+- Re-deploy después de hacer estos cambios
 
 ### Error: "Invalid OAuth callback"
 
