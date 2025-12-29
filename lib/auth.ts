@@ -15,10 +15,7 @@ export const authConfig: NextAuthConfig = {
       const isOnDashboard = nextUrl.pathname.startsWith('/dashboard');
       
       if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect to login page
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL('/dashboard', nextUrl));
+        return isLoggedIn;
       }
       return true;
     },

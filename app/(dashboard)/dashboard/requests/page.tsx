@@ -10,16 +10,19 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { approveRequest, rejectRequest } from './actions';
+import { Filters } from './Filters';
 
 export default async function RequestsPage({
   searchParams,
 }: {
-  searchParams: { status?: string; type?: string };
+  searchParams: Promise<{ status?: string; type?: string }>;
 }) {
+  const params = await searchParams;
+  
   const requests = await prisma.request.findMany({
     where: {
-      ...(searchParams.status && { status: searchParams.status as any }),
-      ...(searchParams.type && { type: searchParams.type as any }),
+      ...(params.status && { status: params.status as any }),
+      ...(params.type && { type: params.type as any }),
     },
     include: {
       investor: {
@@ -54,47 +57,7 @@ export default async function RequestsPage({
       {/* Filtros */}
       <Card>
         <CardContent className="pt-6">
-          <div className="flex gap-4">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">Tipo</label>
-              <select
-                className="rounded-md border border-gray-300 px-3 py-2"
-                onChange={(e) => {
-                  const url = new URL(window.location.href);
-                  if (e.target.value) {
-                    url.searchParams.set('type', e.target.value);
-                  } else {
-                    url.searchParams.delete('type');
-                  }
-                  window.location.href = url.toString();
-                }}
-              >
-                <option value="">Todos</option>
-                <option value="DEPOSIT">Depósitos</option>
-                <option value="WITHDRAWAL">Retiros</option>
-              </select>
-            </div>
-            <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700">Estado</label>
-              <select
-                className="rounded-md border border-gray-300 px-3 py-2"
-                onChange={(e) => {
-                  const url = new URL(window.location.href);
-                  if (e.target.value) {
-                    url.searchParams.set('status', e.target.value);
-                  } else {
-                    url.searchParams.delete('status');
-                  }
-                  window.location.href = url.toString();
-                }}
-              >
-                <option value="">Todos</option>
-                <option value="PENDING">Pendientes</option>
-                <option value="APPROVED">Aprobados</option>
-                <option value="REJECTED">Rechazados</option>
-              </select>
-            </div>
-          </div>
+          <Filters />
         </CardContent>
       </Card>
 
