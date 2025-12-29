@@ -59,6 +59,8 @@ NEXTAUTH_SECRET=tu-secret-generado-con-openssl-rand-base64-32
 NEXTAUTH_URL=https://tu-proyecto.vercel.app
 GOOGLE_CLIENT_ID=tu-google-client-id
 GOOGLE_CLIENT_SECRET=tu-google-client-secret
+GOOGLE_SHEETS_ID=tu-google-sheets-id
+GOOGLE_SHEETS_API_KEY=tu-google-sheets-api-key
 ```
 
 **Importante:**
@@ -67,6 +69,8 @@ GOOGLE_CLIENT_SECRET=tu-google-client-secret
 - Si tu password tiene caracteres especiales, asegúrate de que estén URL-encoded en la string
 - `NEXTAUTH_SECRET`: Generar uno nuevo: `openssl rand -base64 32`
 - `NEXTAUTH_URL`: Se actualizará automáticamente después del primer deploy
+- `GOOGLE_SHEETS_ID`: ID de la planilla de Google Sheets (obtener de la URL: `https://docs.google.com/spreadsheets/d/[SHEET_ID]/edit`)
+- `GOOGLE_SHEETS_API_KEY`: API Key de Google Sheets (crear en [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials → Create Credentials → API Key)
 
 **Troubleshooting URL:**
 - Si la URL tiene espacios, elimínalos
