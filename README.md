@@ -78,9 +78,26 @@ Backend y panel de administración para Winbit. Next.js 16, Prisma, PostgreSQL.
 - `GET /api/public/wallets` - Wallets habilitadas
 - `POST /api/public/requests` - Crear solicitud
 
+## Migración desde Google Sheets
+
+Script para importar inversores y portfolios desde la planilla de Google Sheets:
+
+```bash
+# Previsualizar datos sin importar (recomendado primero)
+npx tsx scripts/migrate-from-sheets.ts --dry-run
+
+# Ejecutar migración real
+npx tsx scripts/migrate-from-sheets.ts
+
+# Especificar hoja diferente a DASHBOARD
+npx tsx scripts/migrate-from-sheets.ts --sheet=INVESTORS
+```
+
+El script detecta automáticamente las columnas por nombre (email, nombre, saldo, etc.) y soporta variantes en español e inglés.
+
 ## Próximos Pasos
 
-- Migrar datos desde Google Sheets
+- ~~Migrar datos desde Google Sheets~~ ✅
 - Conectar winbit-app al backend
 - Implementar autenticación Firebase en Api
 - Deploy a producción
